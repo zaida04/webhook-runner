@@ -1,0 +1,8 @@
+{
+    "hooks": [
+        {
+            "id": "deploy-example",
+            "script_path": "/home/zaidarsh/webrun/hooks/deploy_example.sh"
+        }
+    ]
+}
