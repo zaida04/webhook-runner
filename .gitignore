@@ -4,4 +4,4 @@ tsconfig.tsbuildinfo
 dist/
 
 hooks/*
-!hooks/deploy
+!hooks/deploy_example.sh
