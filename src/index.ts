@@ -21,26 +21,25 @@ app.post("/hooks/:id", (req, res) => {
     const resolvedDirname = dirname(hook.script_path);
     const spawned = spawn("bash", [hook.script_path], { cwd: resolvedDirname });
 
-    let output = "";
-    const handleOutput = (data: string) => {
-        console.log(data);
-        output += data;
-    };
+    res.setHeader('Content-Type', 'text/plain');
 
     spawned.stdout?.setEncoding('utf8');
-    spawned.stdout?.on('data', handleOutput);
+    spawned.stdout?.on('data', (data) => {
+        res.write(data);
+    });
+
     spawned.stderr?.setEncoding('utf8');
-    spawned.stderr?.on('data', handleOutput);
+    spawned.stderr?.on('data', (data) => {
+        res.write(data);
+    });
 
-    const handleExit = (code: number) => {
+    spawned.on("close", (code) => {
         if (code === 0) {
-            return res.status(200).json({ success: true, output });
+            res.end("\nHook executed successfully.\n");
         } else {
-            return res.status(500).json({ error: true, output });
+            res.end("\nHook execution failed.\n");
         }
-    };
-
-    spawned.on("close", handleExit);
+    });
 });
 
 app.listen(4332, () => {
